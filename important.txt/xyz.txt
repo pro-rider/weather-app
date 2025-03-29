@@ -1,0 +1,299 @@
+Todo List App: Start with a basic app where users can add, edit, and delete tasks.
+Weather App: Display current weather information using an API, introducing basic API integration concepts.
+Calculator App: Build a basic calculator with arithmetic operations, perfect for practicing UI layout and basic logic.
+News App: Display news articles from an API with categories and search, focusing on advanced API integration and navigation.
+E-commerce App: Build a complete shopping app with product listings, cart, and checkout, exploring complex data management and payment integration.
+Machine Learning Integration: Integrate machine learning models for tasks like image recognition or language translation, exploring TensorFlow Lite and ML model deployment.
+
+
+
+//  widget concepts
+
+sanakes case for creating file 
+
+https://www.flaticon.com/search?word=sunny%20clouds
+
+
+
+when projectshow in web run error
+flutter run -d chrome --dart-define=FLUTTER_WEB_USE_SKIA=true
+flutter clean
+flutter pub get
+flutter run -d chrome
+flutter build apk
+
+
+ls /home/suren/Android/Sdk/ndk/26.3.11579264
+sdkmanager --uninstall "ndk;26.3.11579264"
+
+
+
+
+for running vysor(mirroring device) 
+
+sudo apt install android-tools-adb
+sudo apt-get install qt4-qmake libqt4-dev libqtcore4 libqtgui4
+sudo apt-get install qt5-qmake qtbase5-dev
+build && qmake -o Makefile ../seven-square.pro
+./build/seven-square
+
+
+code for profile ui
+
+import 'package:faker/faker.dart' hide Image;
+import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
+import 'package:simple_page/colors/color_widgets.dart';
+import 'package:simple_page/profile/componants/custom_image_widgets.dart';
+import 'package:simple_page/profile/widgets/custom_bottom_nav.dart';
+import 'package:simple_page/profile/widgets/custom_rounded_button_widget.dart';
+import 'package:simple_page/profile/widgets/custom_widgets.dart';
+
+class MyProfilePage extends StatefulWidget {
+  const MyProfilePage({super.key});
+
+  @override
+  State<MyProfilePage> createState() => _MyProfilePageState();
+}
+
+class _MyProfilePageState extends State<MyProfilePage> {
+  int _selectedIndex = 0;
+  bool _isScrolled = false;
+  final ScrollController _scrollController = ScrollController();
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(() {
+      setState(() {
+        _isScrolled = _scrollController.position.pixels > 0;
+      });
+    });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: AppColors.tdBlue1,
+        title: const Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [TimeDisplay(), StatusIcons()],
+        ),
+      ),
+      bottomNavigationBar: CustomBottomNav(
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
+      ),
+      body: SingleChildScrollView(
+        controller: _scrollController,
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 10),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Discover",
+                    style: TextStyle(
+                      color: AppColors.tdBlue1,
+                      fontSize: 30.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Row(
+                    children: [
+                      Icon(Icons.notification_add_outlined, size: 30.0),
+                      Gap(10),
+                      CircleAvatar(
+                        radius: 25,
+                        child: Icon(Icons.person, size: 30, color: Colors.white),
+                      )
+                    ],
+                  )
+                ],
+              ),
+            ),
+            Gap(10),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children: ["All", "Supports", "Policies", "Education"].map((label) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: CustomRoundedButton(label: label, onPressed: () {}),
+                  );
+                }).toList(),
+              ),
+            ),
+            Gap(20),
+            SizedBox(
+              height: 320,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: 10,
+                itemBuilder: (context, index) {
+                  return Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(20),
+                          child: CustomImageWidgets(
+                            url: 'https://picsum.photos/200/300?random=$index',
+                            height: 250,
+                            width: MediaQuery.of(context).size.width * 0.5,
+                          ),
+                        ),
+                        SizedBox(height: 8),
+                        Text(
+                          'Item $index',
+                          style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+            ),
+            Gap(20),
+            ListView.builder(
+              itemCount: 10,
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              itemBuilder: (context, index) {
+                return ListTile(
+                  leading: ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: CustomImageWidgets(
+                      url: 'https://picsum.photos/100/100?random=$index',
+                      height: 60,
+                      width: 60,
+                    ),
+                  ),
+                  title: Text(Faker().food.dish()),
+                );
+              },
+            ),
+            GridView.builder(
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
+              ),
+              itemCount: 6,
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              itemBuilder: (context, index) {
+                return CustomImageWidgets(
+                  url: 'https://picsum.photos/150/150?random=$index',
+                  width: 150,
+                  height: 150,
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+            /**
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              child: Row(
+                children:
+                    ["All", "Supports", "Policies", "Education"].map((label) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: CustomRoundedButton(label: label, onPressed: () {}),
+                  );
+                }).toList(),
+              ),
+            ),
+             */
+
+
+
+
+  routing
+draw.io
+
+default route
+Navigator.push
+
+name route
+routes:
+
+data pass
+
+
+
+pakage implementations
+
+pod init
+pod install
+depen
+
+
+git init
+git add file name
+git commit -m "file name add"
+git log (show status)
+git push main origin
+git pull
+git add . (every file)
+git branch -M main
+git remote add origin url
+git checkout main copy uniqueid
+git chekout -b (create new brach)
+git checkout name
+git pull main origin
+git clone
+git switch
+
+// pull if extra commit is addded in git hub
+git pull main origin
+git status
+
+merge request
+// git checkout weather
+// git checkout -b weather
+// git add .
+// git commit -m " remove or add some features in weather app"
+// git push origin weather
+// git pull origin main
+// if already exist 
+git switch branh_name
+// if rebase issue we facing
+// git rebase --continue
+// git rebase --abort
+// git rebase --skip
+// git rebase --quit
+// git rebase --edit-todo
+// git rebase --show-current-patch
+
+git branch -d branch_name
+
+
+
+
+
+
+
+
+

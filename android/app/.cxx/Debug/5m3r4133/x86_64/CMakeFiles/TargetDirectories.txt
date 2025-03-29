@@ -1,0 +1,2 @@
+/home/suren/Documents/flutter_dayproject/simple_page/android/app/.cxx/Debug/5m3r4133/x86_64/CMakeFiles/edit_cache.dir
+/home/suren/Documents/flutter_dayproject/simple_page/android/app/.cxx/Debug/5m3r4133/x86_64/CMakeFiles/rebuild_cache.dir

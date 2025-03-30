@@ -78,6 +78,7 @@ flutter:
       - assets/icons/rain.png
       - assets/placeholders/imageAi.jpg
       - assets/placeholders/rugby1.jpg
+      - assets/placeholders/placeholder2.jpeg
       - assets/placeholders/rugby2.jpg
       - assets/placeholders/rugby3.jpg
       - assets/placeholders/rugby4.jpg

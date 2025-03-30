@@ -2,19 +2,27 @@ import 'package:flutter/material.dart';
 import 'package:simple_page/first_page/splash/home_page.dart';
 import 'package:simple_page/first_page/splash/splash_screen.dart';
 import 'package:simple_page/form_valadation/form/forget_password/page/forget_password_page.dart';
-import 'package:simple_page/form_valadation/form/login/page/login_page.dart';
+// import 'package:simple_page/form_valadation/form/login/page/login_page.dart';
 import 'package:simple_page/form_valadation/form/signup/page/sign_up_page.dart';
+import 'package:simple_page/news_app/screens/comments_screen.dart';
+import 'package:simple_page/news_app/screens/news_detail_screen.dart';
+import 'package:simple_page/news_app/screens/news_feed_screen.dart';
+import 'package:simple_page/news_app/screens/settings_screen.dart';
 import 'package:simple_page/profile/discover/discover_page.dart';
 import 'package:simple_page/profile/discover_card.dart/discover_card.dart';
 import 'package:simple_page/profile/profile/profile_ui.dart';
-import 'package:simple_page/user_profile/profile_picture/profile_picture_user.dart';
-import 'package:simple_page/weather/weather_page.dart';
+// import 'package:simple_page/user_profile/profile_picture/profile_picture_user.dart';
+// import 'package:simple_page/weather/weather_page.dart';
 
 class AppRoutes{
   static Map<String, WidgetBuilder> routes = {
         // '/': (context) =>LoginPage(),
-        '/': (context) => WeatherPage(),
+        // '/': (context) => WeatherPage(),
         // '/': (context) => ProfilePictureUser(),
+        '/news_feed': (context) => const NewsFeedScreen(),
+        '/news_detail': (context) => const NewsDetailScreen(),
+        '/comments': (context) => const CommentsScreen(),
+        '/settings': (context) => const SettingsScreen(),
         '/signup': (context) => SignUpPage(),
         // 'profile_user': (context) => ProfilePictureUser(),
         '/forgetpassword': (context) => ForgetPasswordPage(),
@@ -25,6 +33,7 @@ class AppRoutes{
         '/discover': (context) => DiscoverPage(),
         '/profile_ui': (context) => MyProfilePage(),
         '/discover_card': (context) => DiscoverCardWidgets()
+
     
 
   };

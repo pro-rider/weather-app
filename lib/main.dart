@@ -42,7 +42,7 @@ class MyApp extends StatelessWidget {
       // home: MyProfilePage(),
       // home: DiscoverCardWidgets(),
       // home: DiscoverPage(),
-
+      initialRoute: '/news_feed',
       routes: AppRoutes.routes,
     );
   }

@@ -7,7 +7,8 @@ class NewsDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final news = ModalRoute.of(context)!.settings.arguments as News;
+    // Changed from News to Article
+    final news = ModalRoute.of(context)!.settings.arguments as Article;
     final fakerInstance = faker.Faker(); // Use the alias
 
     return Scaffold(
@@ -15,8 +16,8 @@ class NewsDetailScreen extends StatelessWidget {
         children: [
           Stack(
             children: [
-              Image.asset(
-                news.imageUrl,
+              Image.network( // Changed to Image.network for API images
+                news.urlToImage ?? 'assets/placeholders/rugby11.jpg', // Changed to urlToImage
                 width: double.infinity,
                 height: 200,
                 fit: BoxFit.cover,
@@ -47,17 +48,20 @@ class NewsDetailScreen extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  news.title.toUpperCase(),
-                  style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  news.title?.toUpperCase() ?? 'NO TITLE', // Null safety
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
                 const SizedBox(height: 10),
                 Text(
-                  news.description,
+                  news.description ?? 'No Description', // Null safety
                   style: const TextStyle(fontSize: 14, color: Colors.black87),
                 ),
                 const SizedBox(height: 10),
                 Text(
-                  fakerInstance.lorem.sentences(10).join(' '),
+                  news.content ?? fakerInstance.lorem.sentences(10).join(' '), // Use content if available
                   style: const TextStyle(fontSize: 14, color: Colors.black87),
                 ),
                 const SizedBox(height: 10),

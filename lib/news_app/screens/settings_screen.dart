@@ -41,7 +41,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                   const SizedBox(height: 5),
                   const Text(
-                    'michael.faraday@gmail.com',
+                    'suren.bayalkoti2020@gmail.com',
                     style: TextStyle(color: Colors.grey, fontSize: 14),
                   ),
                   const SizedBox(height: 10),

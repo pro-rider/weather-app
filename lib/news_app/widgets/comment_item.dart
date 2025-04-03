@@ -17,7 +17,9 @@ class CommentItem extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(10),
       decoration: const BoxDecoration(
-        border: Border(bottom: BorderSide(color: Colors.grey, width: 0.2)),
+        border: Border(
+          bottom: BorderSide(color: Colors.grey, width: 0.2),
+        ),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -31,7 +33,7 @@ class CommentItem extends StatelessWidget {
               fit: BoxFit.cover,
               errorBuilder: (context, error, stackTrace) {
                 return Image.asset(
-                  'assets/placeholders/imageAi.jpg', // Placeholder for failed image load
+                  'assets/placeholders/imageAi.jpg',
                   width: 40,
                   height: 40,
                   fit: BoxFit.cover,

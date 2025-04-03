@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:simple_page/news_app/models/news.dart';
+import 'package:simple_page/news_app/models/news.dart'; // Ensure this imports your News/Article model
 
 class NewsCard extends StatelessWidget {
-  final News news;
+  final Article news; // Changed from News to Article
   final VoidCallback onTap;
 
   const NewsCard({super.key, required this.news, required this.onTap});
@@ -14,20 +14,22 @@ class NewsCard extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(10),
         decoration: const BoxDecoration(
-          border: Border(bottom: BorderSide(color: Colors.grey, width: 0.2)),
+          border: Border(
+            bottom: BorderSide(color: Colors.grey, width: 0.2),
+          ),
         ),
         child: Row(
           children: [
             ClipRRect(
               borderRadius: BorderRadius.circular(5),
               child: Image.network(
-                news.imageUrl,
+                news.urlToImage ?? 'assets/placeholders/rugby11.jpg', // Updated to urlToImage
                 width: 100,
                 height: 60,
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) {
                   return Image.asset(
-                    'assets/placeholders/basketball.jpg', // Local placeholder image
+                    'assets/placeholders/basketball.jpg',
                     width: 100,
                     height: 60,
                     fit: BoxFit.cover,
@@ -41,14 +43,17 @@ class NewsCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    news.title,
-                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                    news.title ?? 'No Title', // Updated to handle null title
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
                     maxLines: 2, // Prevents overflow
                     overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 5),
                   Text(
-                    news.timestamp,
+                    news.publishedAt?.toString() ?? 'No Date', // Updated to publishedAt
                     style: const TextStyle(color: Colors.grey, fontSize: 12),
                   ),
                 ],

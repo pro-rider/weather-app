@@ -28,4 +28,33 @@ class AssetsImages {
   static const String githubImage = "assets/icons/github.png";
   static const String googleImage = "assets/icons/google.png";
   static const String instagramImage = "assets/icons/instagram.png";
+
+  static final List<String> allImages = [
+    placeholder,
+    placeholder1,
+    placeholder2,
+    placeholder3,
+    placeholder4,
+    placeholder5,
+    placeholder6,
+    placeholder7,
+    placeholder8,
+    placeholder9,
+    placeholder10,
+    placeholder11,
+    placeholder12,
+    placeholder13,
+    placeholder14,
+    placeholder15,
+    placeholder16,
+    placeholder17,
+    placeholder18,
+    placeholder19,
+    placeholder20,
+    placeholder21,
+    placeholder22,
+    placeholder23,
+    placeholder24,
+    placeholder25,
+  ];
 }

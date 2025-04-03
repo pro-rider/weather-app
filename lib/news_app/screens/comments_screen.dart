@@ -1,4 +1,3 @@
-
 // comments_screen.dart
 import 'package:flutter/material.dart';
 import 'package:faker/faker.dart';
@@ -9,11 +8,13 @@ class CommentsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final faker = Faker();
-    final comments = List.generate(5, (index) => {
-          'username': faker.person.name(),
-          'avatar': 'assets/placeholders/avatar.jpg',
-          'comment': faker.lorem.sentence(),
-        });
+    final comments = List.generate(
+        5,
+        (index) => {
+              'username': faker.person.name(),
+              'avatar': 'assets/placeholders/avatar.jpg',
+              'comment': faker.lorem.sentence(),
+            });
 
     return Scaffold(
       appBar: AppBar(title: Text('Comments')),
@@ -31,8 +32,20 @@ class CommentsScreen extends StatelessWidget {
         Padding(
           padding: EdgeInsets.all(10),
           child: Row(children: [
-            Expanded(child: TextField(decoration: InputDecoration(hintText: 'Write a comment...', border: OutlineInputBorder(borderRadius: BorderRadius.circular(20))))),
-            IconButton(icon: Icon(Icons.send, color: Colors.blue), onPressed: () {}),
+            Expanded(
+              child: TextField(
+                decoration: InputDecoration(
+                  hintText: 'Write a comment...',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                ),
+              ),
+            ),
+            IconButton(
+              icon: Icon(Icons.send, color: Colors.blue),
+              onPressed: () {},
+            ),
           ]),
         ),
       ]),

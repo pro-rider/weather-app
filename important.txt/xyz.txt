@@ -539,3 +539,125 @@ lp -d HP_LaserJet_M402dn_CC9565_USB doc.jpeg doc1.jpeg doc2.jpeg doc3.jpeg doc4.
     setState(() {
       _selectedIndex = index;
     });
+
+
+
+
+
+
+
+Routing 
+Navigator	        Small apps	Simple, built-in	Hard to manage in big apps
+Named Routes	    Medium apps	Organized structure	Not flexible for dynamic data
+go_router	        Large apps	Web-friendly, declarative	Requires additional package
+AutoRoute	        Large apps needing deep linking	Code generation	Extra setup needed
+GetX Navigation  	Performance-focused apps	No context needed, fast	Best when using GetX
+Fluro	            Apps needing dynamic routes	Fast, URL-based	Manual setup required
+Beamer	          Web apps	Inspired by React Router	Overkill for small apps
+
+
+
+Library	   Best For	Pros	Cons
+http	        Simple apps	Official, lightweight	No advanced features
+Dio	          Large apps needing advanced networking	Interceptors, retry, caching	Slightly complex
+Chopper	      Structured API calls	Retrofit-style, auto-generation	Needs build_runner
+GraphQL	      Apps using GraphQL	Efficient queries	Complex setup
+Retrofit	    Cleaner API with Dio	Auto-generates API methods	Needs build_runner
+
+https://www.restapitutorial.com/httpstatuscodes
+
+103 Early Hints	Primarily intended to be used with the Link header. It suggests the user 
+agent start preloading the resources while the server prepares a final response.
+
+
+Future <Album> fetchAlbum() async{
+  final response = await http.get(Uri.parse("baseUrl"));
+  if (response.statusCode = 200){
+    return Album.fromJson(jasonSecode(response.body) as Map<String, dynamic>);
+  }else{
+    throw Exception("Failed to load Album.);
+  }
+}
+
+
+
+Future <Album> fetchAlbum() async{
+  try{
+      final response = await http.get(Uri.parse("baseUrl"));
+  if (response.statusCode = 200){
+    return Album.fromJson(jasonSecode(response.body) as Map<String, dynamic>);
+  }else{
+    throw Exception("Failed to load Album.);
+  }
+  }catch (e) {
+    throw Exception("Error occurred: $e");
+  }
+}
+
+
+Flutter HTTP package documentation
+Dart JSON Encoding/Decoding
+Retrofit Flutter Documentation
+
+Base URL: https://api.nasa.gov/
+Base URL: https://www.coingecko.com/en/api
+Base URL: https://api.spacexdata.com/v4/
+Base URL: https://randomuser.me/
+Base URL: https://alexwohlbruck.github.io/cat-facts/
+Base URL: https://v2.jokeapi.dev/
+Base URL: https://newsapi.org/
+Base URL: https://dog.ceo/dog-api/
+Base URL: https://api.openweathermap.org/data/2.5/
+Base URL: https://jsonplaceholder.typicode.com/
+
+
+https://www.amazon.com/dp/B075T6MTJX/
+
+ Kali NetHunter, Termux,
+
+
+For iOS:
+iRET (iOS Reverse Engineering Toolkit) – Helps in reverse engineering iOS apps.
+
+Frida – Used for iOS dynamic instrumentation and app testing.
+
+Objection – Mobile security testing framework without jailbreaking.
+
+Cycript – An iOS runtime manipulation tool.
+
+Burp Suite – Network security testing and intercepting proxy.
+
+Wireshark – Captures and analyzes network traffic.
+
+Needle – iOS security testing framework for jailbroken devices.
+
+MobSF – Static and dynamic security analysis of iOS apps.
+
+Ghidra – Reverse engineering tool for analyzing iOS binaries.
+
+Radare2 – Open-source reverse engineering framework.
+
+
+
+Student Profiles: Allow users to add, view, and edit student details such as name, age, class, contact information, etc.
+
+Attendance Management: Enable teachers or admins to mark and track student attendance with options for daily or monthly reports.
+
+Gradebook: Provide a feature to input and view student grades for various subjects, along with performance analytics.
+
+Timetable Scheduler: Include a timetable section for students to view their daily class schedule.
+
+Notifications and Announcements: Add functionality for sending important notifications or announcements to students and parents.
+
+Search & Filter: Add options to search or filter students by name, grade, class, or other parameters.
+
+Advanced Features:
+Student Analytics: Visualize students’ performance data using graphs or charts (e.g., attendance trends, grade progress).
+
+Parent Portal: Create a dedicated section for parents to monitor their child’s performance and receive updates.
+
+File Uploads: Allow teachers to upload study materials, assignments, or notes.
+
+Secure Login: Implement role-based authentication (e.g., separate accounts for admins, teachers, parents, and students).
+
+Cloud Data Syncing: Integrate Firebase for real-time database management to ensure data is synced across devices.

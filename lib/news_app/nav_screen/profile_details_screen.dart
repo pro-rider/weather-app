@@ -126,7 +126,7 @@ class _ProfileDetailsScreenState extends State<ProfileDetailsScreen> {
                   right: 17,
                   bottom: 17,
                   child: GestureDetector(
-                    onTap: _showImageSourceDialog, // Add the tap handler
+                    onTap: _showImageSourceDialog,
                     child: CircleAvatar(
                       radius: 20,
                       backgroundColor: AppColors.tdYellow,

@@ -251,6 +251,8 @@ depen
 
 
 git init
+git config --global user.name
+git config --global user.email
 git add file name
 git commit -m "file name add"
 git log (show status)

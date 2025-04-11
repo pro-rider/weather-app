@@ -3,7 +3,7 @@ import 'package:simple_page/user_profile/model/data_model/data_model_forprofile.
 
 class ReusableProfileWidgets extends StatelessWidget {
   final ListItem item;
-  ReusableProfileWidgets({required this.item});
+  const ReusableProfileWidgets({super.key, required this.item});
 
   @override
   Widget build(BuildContext context) {

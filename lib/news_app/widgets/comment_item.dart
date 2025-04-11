@@ -9,7 +9,7 @@ class CommentItem extends StatelessWidget {
     super.key,
     required this.username,
     required this.avatar,
-    required this.comment,
+    required this.comment, required replies, required void Function() onReply, required isLiked, required void Function() onEdit, required void Function() onDelete, required void Function() onLikeToggle, required Function() onAvatarTap,
   });
 
   @override

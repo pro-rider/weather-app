@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:simple_page/colors/color_widgets.dart';
 // import 'package:simple_page/profile/discover/discover_page.dart';
 // import 'package:simple_page/profile/discover_card.dart/discover_card.dart';
 import 'package:simple_page/first_page/navigation/routes.dart';

@@ -1,14 +1,17 @@
+import 'dart:convert';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:gap/gap.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:simple_page/colors/color_widgets.dart';
+import 'package:simple_page/news_app/database/sqflte/sqflite_database_manage.dart';
 import 'package:simple_page/news_app/models/news.dart';
 import 'package:simple_page/news_app/nav_screen/profile_details_screen.dart';
 import 'package:simple_page/news_app/nav_screen/search_screen.dart';
 import 'package:simple_page/news_app/widgets/news_card.dart';
-import 'package:simple_page/profile/constants/assets_images.dart';
 import 'package:simple_page/profile/widgets/custom_bottom_nav.dart';
+import 'dart:async';
 
 class NewsFeedScreen extends StatefulWidget {
   const NewsFeedScreen({super.key});
@@ -18,50 +21,72 @@ class NewsFeedScreen extends StatefulWidget {
 }
 
 class _NewsFeedScreenState extends State<NewsFeedScreen> {
-  final PageController _pageController = PageController(viewportFraction: 0.9);
   final ScrollController _verticalScrollController = ScrollController();
   final ScrollController _horizontalScrollController = ScrollController();
   String selectedTab = 'All News';
   String hoveredTab = '';
   int _selectedIndex = 0;
-  int _currentPage = 0;
+  bool _isLoadingMore = false;
+  int _page = 1; // For pagination
 
-  late Future<News?> _newsFuture; // Store the Future
+  late Future<News?> _newsFuture;
+  List<Article> _allArticles = [];
+  Timer? _debounce;
 
   @override
   void initState() {
     super.initState();
-    _newsFuture = fetchNews(); // Initialize the Future
-    _pageController.addListener(_pageChangeListener);
+    _newsFuture = fetchNews();
     _verticalScrollController.addListener(_loadMoreNews);
     _horizontalScrollController.addListener(_loadMoreFeaturedNews);
   }
 
-  void _pageChangeListener() {
-    if (_pageController.page != null) {
-      int nextPage = _pageController.page!.round();
-      if (_currentPage != nextPage) {
-        setState(() {
-          _currentPage = nextPage;
-        });
-      }
-    }
-  }
-
   void _loadMoreNews() {
     if (_verticalScrollController.position.pixels >=
-        _verticalScrollController.position.maxScrollExtent - 200) {
-      setState(() {
-        _newsFuture = fetchNews(); // Refresh for more news
+            _verticalScrollController.position.maxScrollExtent - 200 &&
+        !_isLoadingMore) {
+      if (_debounce?.isActive ?? false) return;
+      _debounce = Timer(const Duration(milliseconds: 500), () {
+        setState(() => _isLoadingMore = true);
+        fetchNews(page: _page + 1).then((news) {
+          setState(() {
+            if (news != null && news.articles != null) {
+              _allArticles.addAll(
+                  news.articles!.where((newArticle) => !_allArticles.any(
+                      (existing) => existing.url == newArticle.url)));
+              _page++;
+            }
+            _isLoadingMore = false;
+          });
+        }).catchError((e) {
+          debugPrint("Load more error: $e");
+          setState(() => _isLoadingMore = false);
+        });
       });
     }
   }
 
   void _loadMoreFeaturedNews() {
     if (_horizontalScrollController.position.pixels >=
-        _horizontalScrollController.position.maxScrollExtent - 200) {
-      setState(() {
-        _newsFuture = fetchNews(); // Refresh for more featured news
+            _horizontalScrollController.position.maxScrollExtent - 200 &&
+        !_isLoadingMore) {
+      if (_debounce?.isActive ?? false) return;
+      _debounce = Timer(const Duration(milliseconds: 500), () {
+        setState(() => _isLoadingMore = true);
+        fetchNews(page: _page + 1).then((news) {
+          setState(() {
+            if (news != null && news.articles != null) {
+              _allArticles.addAll(
+                  news.articles!.where((newArticle) => !_allArticles.any(
+                      (existing) => existing.url == newArticle.url)));
+              _page++;
+            }
+            _isLoadingMore = false;
+          });
+        }).catchError((e) {
+          debugPrint("Load more featured error: $e");
+          setState(() => _isLoadingMore = false);
+        });
       });
     }
   }
@@ -76,34 +101,66 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
           MaterialPageRoute(
               builder: (context) => const ProfileDetailsScreen()));
     } else {
-      setState(() {
-        _selectedIndex = index;
-      });
+      setState(() => _selectedIndex = index);
     }
   }
 
-  Future<News?> fetchNews() async {
-    final dio = Dio();
+  Future<News?> fetchNews({Dio? dioClient, int page = 1}) async {
+    final dio = dioClient ?? Dio();
+    String url =
+        "https://saurav.tech/NewsAPI/top-headlines/category/health/in.json";
+      // "https://saurav.tech/NewsAPI/top-headlines/category/${selectedTab.toLowerCase()}/in.json?page=$page";
+
+
+    // url = "https://saurav.tech/NewsAPI/top-headlines/category/${selectedTab.toLowerCase()}/in.json?page=$page";
+    final prefs = await SharedPreferences.getInstance();
+
     try {
-      final response = await dio.get(
-        "https://saurav.tech/NewsAPI/top-headlines/category/health/in.json",
-      );
-      if (response.statusCode == 200) {
-        return News.fromJson(response.data);
+      final response = await dio.get(url);
+      if (response.statusCode == 200 && response.data != null) {
+        final news = News.fromJson(response.data);
+        await DatabaseHelper.insertNews(news.articles ?? []);
+        await prefs.setString('cached_news', jsonEncode(response.data));
+        return news;
       } else {
-        throw Exception("Failed to load news");
+        throw Exception("Unexpected response: ${response.statusCode}");
       }
     } catch (e) {
+      debugPrint("Error: $e");
+      return await _fetchCachedNews(prefs, e);
+    }
+  }
+
+  Future<News?> _fetchCachedNews(SharedPreferences prefs, dynamic error) async {
+    if (error is DioException) {
       Fluttertoast.showToast(
-        msg: 'Unable to fetch data. Please check your internet connection.',
+        msg: 'Network issue: Please check your internet connection.',
         toastLength: Toast.LENGTH_LONG,
         backgroundColor: Colors.red,
         textColor: Colors.white,
         gravity: ToastGravity.BOTTOM,
         fontSize: 16.0,
       );
-      return null;
+    } else {
+      Fluttertoast.showToast(
+        msg: 'Something went wrong. Please try again.',
+        toastLength: Toast.LENGTH_LONG,
+        backgroundColor: Colors.red,
+        textColor: Colors.white,
+        gravity: ToastGravity.BOTTOM,
+        fontSize: 16.0,
+      );
     }
+
+    final cachedArticles = await DatabaseHelper.fetchNewsFromDb();
+    if (cachedArticles.isNotEmpty) {
+      return News(articles: cachedArticles);
+    }
+    if (prefs.containsKey('cached_news')) {
+      final cachedData = jsonDecode(prefs.getString('cached_news')!);
+      return News.fromJson(cachedData);
+    }
+    return null;
   }
 
   @override
@@ -131,51 +188,89 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator());
             } else if (snapshot.hasError) {
-              return Center(child: Text('Error: ${snapshot.error}'));
+              return Center(
+                  child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('Error: ${snapshot.error}'),
+                  const SizedBox(height: 10),
+                  ElevatedButton(
+                    onPressed: () => setState(() => _newsFuture = fetchNews()),
+                    child: const Text('Retry'),
+                  ),
+                ],
+              ));
             } else if (snapshot.hasData && snapshot.data != null) {
-              final news = snapshot.data!;
-              final featuredNews = news.articles?.take(5).toList() ?? [];
-              final allNews = news.articles ?? [];
+              if (_allArticles.isEmpty && snapshot.data!.articles != null) {
+                _allArticles = snapshot.data!.articles!;
+              }
+              final featuredNews = _allArticles.take(5).toList();
+              final allNews = selectedTab == 'All News'
+                  ? _allArticles
+                  : _allArticles
+                      .where((article) =>
+                          article.source?.name
+                              ?.toLowerCase()
+                              .contains(selectedTab.toLowerCase()) ??
+                          false)
+                      .toList(); // Basic filtering (needs API support for accuracy)
 
               return Column(
                 children: [
-                  // Category Bar
                   Container(
                     padding: const EdgeInsets.symmetric(vertical: 10),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: ['All News', 'Business', 'Politics', 'Tech']
-                          .map((tab) {
-                        bool isSelected = selectedTab == tab;
-                        bool isHovered = hoveredTab == tab;
-                        return MouseRegion(
-                          onEnter: (_) => setState(() => hoveredTab = tab),
-                          onExit: (_) => setState(() => hoveredTab = ''),
-                          child: GestureDetector(
-                            onTap: () => setState(() => selectedTab = tab),
-                            child: Container(
-                              padding: const EdgeInsets.all(12),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5.0),
-                                color: isSelected || isHovered
-                                    ? AppColors.tdYellow
-                                    : AppColors.tdBlue1,
-                              ),
-                              child: Text(
-                                tab,
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500,
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          'All News',
+                          'Business',
+                          'Entertainment',
+                          'Politics',
+                          'Technology',
+                          'Health',
+                          'Sport'
+                        ].map((tab) {
+                          bool isSelected = selectedTab == tab;
+                          bool isHovered = hoveredTab == tab;
+                          return MouseRegion(
+                            onEnter: (_) => setState(() => hoveredTab = tab),
+                            onExit: (_) => setState(() => hoveredTab = ''),
+                            child: GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  selectedTab = tab;
+                                  if (tab != 'All News') {
+                                    _page = 1;
+                                    _allArticles.clear();
+                                    _newsFuture = fetchNews();
+                                  }
+                                });
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.all(12),
+                                margin: const EdgeInsets.symmetric(horizontal: 4),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5.0),
+                                  color: isSelected || isHovered
+                                      ? AppColors.tdYellow
+                                      : AppColors.tdBlue1,
+                                ),
+                                child: Text(
+                                  tab,
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w500,
+                                  ),
                                 ),
                               ),
                             ),
-                          ),
-                        );
-                      }).toList(),
+                          );
+                        }).toList(),
+                      ),
                     ),
                   ),
-
-                  // Featured News Section
                   SizedBox(
                     height: 280,
                     child: featuredNews.isEmpty
@@ -198,13 +293,12 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
                                         borderRadius: BorderRadius.circular(8),
                                         child: Image.network(
                                           featuredNews[index].urlToImage ??
-                                              AssetsImages.placeholder13,
+                                              'assets/placeholders/avatar.jpg',
                                           width: double.infinity,
                                           height: 200,
                                           fit: BoxFit.cover,
-                                          errorBuilder: (_, __, ___) =>
-                                              Image.asset(
-                                            AssetsImages.placeholder13,
+                                          errorBuilder: (_, __, ___) => Image.asset(
+                                            'assets/placeholders/avatar.jpg',
                                             width: double.infinity,
                                             height: 200,
                                             fit: BoxFit.cover,
@@ -236,8 +330,7 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
                                               ),
                                               const SizedBox(height: 4),
                                               Text(
-                                                featuredNews[index]
-                                                        .description ??
+                                                featuredNews[index].description ??
                                                     '',
                                                 maxLines: 2,
                                                 overflow: TextOverflow.ellipsis,
@@ -258,15 +351,17 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
                           ),
                   ),
                   const Gap(20),
-
-                  // Vertical News Feed
                   Expanded(
                     child: allNews.isEmpty
                         ? const Center(child: Text('No news available'))
                         : ListView.builder(
                             controller: _verticalScrollController,
-                            itemCount: allNews.length,
+                            itemCount: allNews.length + (_isLoadingMore ? 1 : 0),
                             itemBuilder: (context, index) {
+                              if (index == allNews.length && _isLoadingMore) {
+                                return const Center(
+                                    child: CircularProgressIndicator());
+                              }
                               return NewsCard(
                                 news: allNews[index],
                                 onTap: () => Navigator.pushNamed(
@@ -289,10 +384,9 @@ class _NewsFeedScreenState extends State<NewsFeedScreen> {
 
   @override
   void dispose() {
-    _pageController.removeListener(_pageChangeListener);
-    _pageController.dispose();
     _verticalScrollController.dispose();
     _horizontalScrollController.dispose();
+    _debounce?.cancel();
     super.dispose();
   }
 }

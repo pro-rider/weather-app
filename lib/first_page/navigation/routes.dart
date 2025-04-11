@@ -32,7 +32,7 @@ class AppRoutes{
         '/home': (context) => HomePage(),
         '/discover': (context) => DiscoverPage(),
         '/profile_ui': (context) => MyProfilePage(),
-        '/discover_card': (context) => DiscoverCardWidgets()
+        '/discover_card': (context) => DiscoverCardWidgets(),
 
     
 

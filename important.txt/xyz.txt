@@ -14,6 +14,18 @@ sanakes case for creating file
 https://www.flaticon.com/search?word=sunny%20clouds
 
 
+mu api for news app
+api key = 5b32798fa2e54dacbf294c6c3688ad65
+
+top headlines api
+GET https://newsapi.org/v2/top-headlines?country=us&apiKey=5b32798fa2e54dacbf294c6c3688ad65
+
+
+GET https://newsapi.org/v2/everything?q=Apple&from=2025-04-06&sortBy=popularity&apiKey=API_KEY
+
+every things end point
+GET https://newsapi.org/v2/everything?q=bitcoin&apiKey=5b32798fa2e54dacbf294c6c3688ad65
+
 
 when projectshow in web run error
 flutter run -d chrome --dart-define=FLUTTER_WEB_USE_SKIA=true
@@ -22,6 +34,7 @@ flutter pub get
 flutter run -d chrome
 flutter build apk
 
+instance (single tone instane)
 
 ls /home/suren/Android/Sdk/ndk/26.3.11579264
 sdkmanager --uninstall "ndk;26.3.11579264"
@@ -290,10 +303,15 @@ git switch branh_name
 // git rebase --show-current-patch
 
 git branch -d branch_name
+https://reqres.in/
+https://search.brave.com/search?q=firebase.google.ocm&source=desktop
+https://firebase.flutter.dev/docs/overview
 
 
 
-
+https://codesandbox.io/p/sandbox/github/dastagir-ahmed/flutter-getx-app
+: https://bit.ly/gologin_dbestech
+https://appcrafting.wixsite.com/appcr...
 
 
 // syllabus of flutter 

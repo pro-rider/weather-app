@@ -79,7 +79,7 @@ class _LoginPageState extends State<LoginPage> {
         body: SingleChildScrollView(
           child: Form(
             key: _formKey,
-            child: Container(
+            child: SizedBox(
               width: MediaQuery.of(context).size.width,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,

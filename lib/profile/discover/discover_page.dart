@@ -6,6 +6,8 @@ import 'package:simple_page/profile/discover_card.dart/discover_card.dart';
 // import 'package:simple_page/profile/constants/assets_images.dart';
 
 class DiscoverPage extends StatelessWidget {
+  const DiscoverPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:simple_page/colors/color_widgets.dart';
 import 'package:simple_page/profile/constants/assets_images.dart';
-import 'package:simple_page/profile/widgets/custom_bottom_nav.dart';
 
 class DiscoverCardWidgets extends StatefulWidget {
   const DiscoverCardWidgets({super.key});

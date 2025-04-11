@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:simple_page/colors/color_widgets.dart';
 
 class CustomSigninButton extends StatelessWidget {
   final String imagePath;
